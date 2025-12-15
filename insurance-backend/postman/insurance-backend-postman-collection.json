@@ -1,0 +1,221 @@
+{
+  "info": {
+    "_postman_id": "insurance-backend-collection-001",
+    "name": "Insurance Policy & Claim Management - Monolith",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Login as Admin",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"admin123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/login",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "login"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Admin - Customers",
+      "item": [
+        {
+          "name": "Create Customer",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{admin_token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Demo Customer\",\n  \"email\": \"demo.customer@example.com\",\n  \"phone\": \"9876543210\",\n  \"username\": \"demo_customer\",\n  \"password\": \"cust123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/admin/customers",
+              "host": ["{{base_url}}"],
+              "path": ["api", "admin", "customers"]
+            }
+          }
+        },
+        {
+          "name": "Get All Customers",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{admin_token}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/admin/customers",
+              "host": ["{{base_url}}"],
+              "path": ["api", "admin", "customers"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Admin - Policies",
+      "item": [
+        {
+          "name": "Create Policy",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{admin_token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"policyNumber\": \"POL-HEALTH-001\",\n  \"policyType\": \"HEALTH\",\n  \"premiumAmount\": 15000,\n  \"startDate\": \"2025-01-01\",\n  \"endDate\": \"2026-01-01\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/admin/policies",
+              "host": ["{{base_url}}"],
+              "path": ["api", "admin", "policies"]
+            }
+          }
+        },
+        {
+          "name": "Get All Policies",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{admin_token}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/admin/policies",
+              "host": ["{{base_url}}"],
+              "path": ["api", "admin", "policies"]
+            }
+          }
+        },
+        {
+          "name": "Assign Policy to Customer",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{admin_token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"policyId\": 1\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/admin/policies/customers/2/assign",
+              "host": ["{{base_url}}"],
+              "path": ["api", "admin", "policies", "customers", "2", "assign"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Admin - Claims",
+      "item": [
+        {
+          "name": "Get All Claims",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{admin_token}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/admin/claims",
+              "host": ["{{base_url}}"],
+              "path": ["api", "admin", "claims"]
+            }
+          }
+        },
+        {
+          "name": "Update Claim Status",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{admin_token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"APPROVED\",\n  \"remarks\": \"Approved after verification\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/admin/claims/1/status",
+              "host": ["{{base_url}}"],
+              "path": ["api", "admin", "claims", "1", "status"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Customer",
+      "item": [
+        {
+          "name": "Login as Customer",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"demo_customer\",\n  \"password\": \"cust123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/login",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "Create Claim",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{customer_token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"policyId\": 1,\n  \"claimAmount\": 50000,\n  \"claimDate\": \"2025-02-01\",\n  \"description\": \"Hospitalization due to accident\",\n  \"evidenceUrl\": \"https://example.com/report1.pdf\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/claims",
+              "host": ["{{base_url}}"],
+              "path": ["api", "claims"]
+            }
+          }
+        },
+        {
+          "name": "Get My Claims",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{customer_token}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/claims/me",
+              "host": ["{{base_url}}"],
+              "path": ["api", "claims", "me"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
