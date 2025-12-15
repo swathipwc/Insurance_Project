@@ -3,9 +3,9 @@ server:
 
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/insurance_db?useSSL=false&serverTimezone=UTC
-    username: root        # TODO: change to your MySQL username
-    password: root        # TODO: change to your MySQL password
+    url: jdbc:mysql://insurance-db.ct4268qog34b.ap-south-1.rds.amazonaws.com:3306/insurance_db?useSSL=false&serverTimezone=UTC
+    username: admin        # TODO: change to your MySQL username
+    password: rootuser        # TODO: change to your MySQL password
 
   jpa:
     hibernate:
