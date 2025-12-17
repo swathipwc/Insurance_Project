@@ -50,7 +50,10 @@ const PoliciesPage = () => {
     try {
       const payload = {
         ...form,
-        premiumAmount: Number(form.premiumAmount)
+        premiumAmount: Number(form.premiumAmount),
+        startDate: form.startDate || null,
+        endDate: form.endDate || null,
+        status: "ACTIVE"
       };
       await api.post('/api/admin/policies', payload);
       setSuccess('Policy created successfully');
@@ -64,7 +67,9 @@ const PoliciesPage = () => {
       fetchPolicies();
     } catch (err) {
       console.error(err);
-      setError(err.response?.data || 'Failed to create policy');
+      setError(err.response?.data?.message ||
+      (typeof err.response?.data === 'string' ? err.response.data : null) ||
+      'Failed to create policy');
     }
   };
 
