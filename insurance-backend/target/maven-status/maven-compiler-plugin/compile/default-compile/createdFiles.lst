@@ -28,6 +28,7 @@ com\capstone\insurance\exceptions\ResourceNotFoundException.class
 com\capstone\insurance\security\CustomUserDetailsService.class
 com\capstone\insurance\entities\enums\ClaimStatus.class
 com\capstone\insurance\services\impl\ActivityLogServiceImpl.class
+com\capstone\insurance\config\CorsConfig.class
 com\capstone\insurance\dto\customer\CustomerDto.class
 com\capstone\insurance\entities\Customer.class
 com\capstone\insurance\repositories\CustomerPolicyRepository.class

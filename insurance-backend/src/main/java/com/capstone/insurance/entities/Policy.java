@@ -38,5 +38,6 @@ public class Policy {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
+    @Builder.Default
     private PolicyStatus status = PolicyStatus.ACTIVE;
 }

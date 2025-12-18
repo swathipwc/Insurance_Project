@@ -3,15 +3,9 @@ server:
 
 spring:
   datasource:
-<<<<<<< HEAD
-    url: jdbc:mysql://(paste RDS endpoint)
-    username: root        # TODO: change to your MySQL username
-    password: root        # TODO: change to your MySQL password
-=======
-    url: jdbc:mysql://insurance-db.ct4268qog34b.ap-south-1.rds.amazonaws.com:3306/insurance_db?useSSL=false&serverTimezone=UTC
-    username: admin        # TODO: change to your MySQL username
-    password: rootuser        # TODO: change to your MySQL password
->>>>>>> cfd2cc8f6f0d5f27e767b94614075faca417427a
+    url: jdbc:mysql://insurance-db.c3uqy682eg7h.us-east-1.rds.amazonaws.com:3306/insurance_db?useSSL=false&serverTimezone=UTC
+    username: admin      # TODO: change to your MySQL username
+    password: rootuser  
 
   jpa:
     hibernate:
