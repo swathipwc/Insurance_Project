@@ -28,5 +28,6 @@ public class User {
     private Role role;
 
     @Column(nullable = false)
+    @Builder.Default
     private Boolean enabled = true;
 }
