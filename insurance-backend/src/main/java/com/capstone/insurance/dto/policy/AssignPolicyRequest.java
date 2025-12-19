@@ -9,5 +9,5 @@ import lombok.Setter;
 public class AssignPolicyRequest {
 
     @NotNull
-    private Long policyId;
+    private java.util.UUID policyId;
 }

@@ -15,17 +15,28 @@ public class CorsConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
 
-        // Frontend origin
-        config.setAllowedOrigins(List.of("http://localhost:5173"));
+        // Frontend origins - include common Vite ports
+        config.setAllowedOrigins(List.of(
+                "http://localhost:3000",
+                "http://localhost:5173",
+                "http://127.0.0.1:3000",
+                "http://127.0.0.1:5173"
+        ));
 
         // Allow common methods + OPTIONS (preflight)
-        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
 
         // Allow headers (Content-Type, Authorization etc.)
         config.setAllowedHeaders(List.of("*"));
 
-        // If you ever need cookies; safe to keep false for JWT
-        config.setAllowCredentials(false);
+        // Allow credentials for cookies (refresh token)
+        config.setAllowCredentials(true);
+
+        // Expose headers that frontend might need
+        config.setExposedHeaders(List.of("Authorization", "Content-Type"));
+
+        // Cache preflight response for 1 hour
+        config.setMaxAge(3600L);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);

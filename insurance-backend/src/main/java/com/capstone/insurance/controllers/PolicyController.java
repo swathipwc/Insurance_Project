@@ -1,5 +1,6 @@
 package com.capstone.insurance.controllers;
 
+import com.capstone.insurance.dto.common.PaginatedResponse;
 import com.capstone.insurance.dto.policy.AssignPolicyRequest;
 import com.capstone.insurance.dto.policy.PolicyCreateRequest;
 import com.capstone.insurance.dto.policy.PolicyDto;
@@ -28,22 +29,32 @@ public class PolicyController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
-    public ResponseEntity<List<PolicyDto>> getAllPolicies() {
-        return ResponseEntity.ok(policyService.getAllPolicies());
+    public ResponseEntity<PaginatedResponse<PolicyDto>> getAllPolicies(
+            @RequestParam(defaultValue = "0") int page) {
+        return ResponseEntity.ok(policyService.getAllPoliciesPaginated(page));
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{id}")
-    public ResponseEntity<PolicyDto> getPolicyById(@PathVariable Long id) {
+    public ResponseEntity<PolicyDto> getPolicyById(@PathVariable java.util.UUID id) {
         return ResponseEntity.ok(policyService.getPolicyById(id));
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping("/{id}")
+    public ResponseEntity<PolicyDto> updatePolicy(
+            @PathVariable java.util.UUID id,
+            @Valid @RequestBody com.capstone.insurance.dto.policy.PolicyUpdateRequest request) {
+        return ResponseEntity.ok(policyService.updatePolicy(id, request));
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/customers/{customerId}/assign")
     public ResponseEntity<Void> assignPolicyToCustomer(
-            @PathVariable Long customerId,
+            @PathVariable java.util.UUID customerId,
             @Valid @RequestBody AssignPolicyRequest request) {
         policyService.assignPolicyToCustomer(customerId, request);
         return ResponseEntity.ok().build();
     }
+
 }

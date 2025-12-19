@@ -1,10 +1,14 @@
 package com.capstone.insurance.services;
 
+import com.capstone.insurance.dto.common.PaginatedResponse;
 import com.capstone.insurance.dto.policy.AssignPolicyRequest;
+import com.capstone.insurance.dto.policy.CustomerPolicyDto;
 import com.capstone.insurance.dto.policy.PolicyCreateRequest;
 import com.capstone.insurance.dto.policy.PolicyDto;
+import com.capstone.insurance.dto.policy.PolicyUpdateRequest;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface PolicyService {
 
@@ -12,7 +16,13 @@ public interface PolicyService {
 
     List<PolicyDto> getAllPolicies();
 
-    PolicyDto getPolicyById(Long id);
+    PaginatedResponse<PolicyDto> getAllPoliciesPaginated(int page);
 
-    void assignPolicyToCustomer(Long customerId, AssignPolicyRequest request);
+    PolicyDto getPolicyById(UUID id);
+
+    PolicyDto updatePolicy(UUID id, PolicyUpdateRequest request);
+
+    void assignPolicyToCustomer(UUID customerId, AssignPolicyRequest request);
+
+    List<CustomerPolicyDto> getCustomerPolicies(Long userId);
 }

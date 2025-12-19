@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Getter
@@ -12,13 +13,13 @@ import java.time.LocalDate;
 public class ClaimCreateRequest {
 
     @NotNull
-    private Long policyId;
+    private java.util.UUID policyId;
 
     private LocalDate claimDate;
 
     @NotNull
     @Min(0)
-    private Double claimAmount;
+    private BigDecimal claimAmount;
 
     private String description;
 

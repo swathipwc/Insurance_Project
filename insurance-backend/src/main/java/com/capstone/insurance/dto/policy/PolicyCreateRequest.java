@@ -7,21 +7,19 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Getter
 @Setter
 public class PolicyCreateRequest {
 
-    @NotBlank
-    private String policyNumber;
-
     @NotNull
     private PolicyType policyType;
 
     @NotNull
     @Min(0)
-    private Double premiumAmount;
+    private BigDecimal coverageAmount;
 
     private LocalDate startDate;
     private LocalDate endDate;

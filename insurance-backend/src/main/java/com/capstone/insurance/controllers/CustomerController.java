@@ -1,7 +1,9 @@
 package com.capstone.insurance.controllers;
 
+import com.capstone.insurance.dto.common.PaginatedResponse;
 import com.capstone.insurance.dto.customer.CustomerCreateRequest;
 import com.capstone.insurance.dto.customer.CustomerDto;
+import com.capstone.insurance.dto.customer.CustomerUpdateRequest;
 import com.capstone.insurance.services.CustomerService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -27,13 +29,22 @@ public class CustomerController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
-    public ResponseEntity<List<CustomerDto>> getAllCustomers() {
-        return ResponseEntity.ok(customerService.getAllCustomers());
+    public ResponseEntity<PaginatedResponse<CustomerDto>> getAllCustomers(
+            @RequestParam(defaultValue = "0") int page) {
+        return ResponseEntity.ok(customerService.getAllCustomersPaginated(page));
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{id}")
-    public ResponseEntity<CustomerDto> getCustomerById(@PathVariable Long id) {
+    public ResponseEntity<CustomerDto> getCustomerById(@PathVariable java.util.UUID id) {
         return ResponseEntity.ok(customerService.getCustomerById(id));
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping("/{id}")
+    public ResponseEntity<CustomerDto> updateCustomer(
+            @PathVariable java.util.UUID id,
+            @Valid @RequestBody CustomerUpdateRequest request) {
+        return ResponseEntity.ok(customerService.updateCustomer(id, request));
     }
 }

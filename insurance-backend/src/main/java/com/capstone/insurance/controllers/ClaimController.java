@@ -1,5 +1,6 @@
 package com.capstone.insurance.controllers;
 
+import com.capstone.insurance.dto.common.PaginatedResponse;
 import com.capstone.insurance.dto.claim.ClaimCreateRequest;
 import com.capstone.insurance.dto.claim.ClaimDto;
 import com.capstone.insurance.dto.claim.ClaimStatusUpdateRequest;
@@ -41,12 +42,13 @@ public class ClaimController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/api/admin/claims")
-    public ResponseEntity<List<ClaimDto>> getAllClaims(
+    public ResponseEntity<PaginatedResponse<ClaimDto>> getAllClaims(
+            @RequestParam(defaultValue = "0") int page,
             @RequestParam(required = false) String status,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to) {
 
-        return ResponseEntity.ok(claimService.getAllClaims(status, from, to));
+        return ResponseEntity.ok(claimService.getAllClaimsPaginated(page, status, from, to));
     }
 
     @PreAuthorize("hasRole('ADMIN')")

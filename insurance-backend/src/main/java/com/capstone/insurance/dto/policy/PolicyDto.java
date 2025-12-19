@@ -5,16 +5,20 @@ import com.capstone.insurance.entities.enums.PolicyType;
 import lombok.Builder;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
 @Builder
 public class PolicyDto {
-    private Long id;
-    private String policyNumber;
+    private java.util.UUID id;
+    private String policyCode;
     private PolicyType policyType;
-    private Double premiumAmount;
+    private BigDecimal coverageAmount;
     private LocalDate startDate;
     private LocalDate endDate;
     private PolicyStatus status;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 }

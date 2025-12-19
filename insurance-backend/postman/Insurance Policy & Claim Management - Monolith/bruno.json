@@ -1,9 +1,0 @@
-{
-  "version": "1",
-  "name": "Insurance Policy & Claim Management - Monolith",
-  "type": "collection",
-  "ignore": [
-    "node_modules",
-    ".git"
-  ]
-}
