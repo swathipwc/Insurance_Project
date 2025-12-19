@@ -1,0 +1,34 @@
+package com.capstone.insurance.controllers;
+
+import com.capstone.insurance.dto.activity.ActivityLogCreateRequest;
+import com.capstone.insurance.dto.activity.ActivityLogDto;
+import com.capstone.insurance.services.ActivityLogService;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/admin/activity-logs")
+@RequiredArgsConstructor
+public class ActivityLogController {
+
+    private final ActivityLogService activityLogService;
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping
+    public ResponseEntity<List<ActivityLogDto>> getAllActivityLogs() {
+        return ResponseEntity.ok(activityLogService.getAllActivityLogs());
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping
+    public ResponseEntity<ActivityLogDto> createActivityLog(
+            @Valid @RequestBody ActivityLogCreateRequest request) {
+        return ResponseEntity.ok(activityLogService.createActivityLog(request));
+    }
+}
+

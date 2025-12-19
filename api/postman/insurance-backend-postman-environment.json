@@ -1,0 +1,21 @@
+{
+  "id": "insurance-env-001",
+  "name": "Insurance Backend Local",
+  "values": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8080",
+      "enabled": true
+    },
+    {
+      "key": "admin_token",
+      "value": "",
+      "enabled": true
+    },
+    {
+      "key": "customer_token",
+      "value": "",
+      "enabled": true
+    }
+  ]
+}
