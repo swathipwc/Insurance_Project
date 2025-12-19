@@ -1,0 +1,26 @@
+meta {
+  name: Create Policy
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{base_url}}/api/admin/policies
+  body: json
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{admin_token}}
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "policyNumber": "POL-HEALTH-001",
+    "policyType": "HEALTH",
+    "premiumAmount": 15000,
+    "startDate": "2025-01-01",
+    "endDate": "2026-01-01"
+  }
+}
