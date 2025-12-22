@@ -15,6 +15,16 @@ export const validatePhone = (phone) => {
  const digitsOnly = phone.replace(/\D/g, "");
  return digitsOnly.length === 10;
 };
+export const hasInvalidPhoneCharacters = (phone) => {
+ if (!phone) {
+   return false;
+ }
+ // Check if phone contains alphabets or invalid special characters
+ // Allowed: digits, spaces, dashes, plus signs, parentheses
+ // Invalid: alphabets and other special characters
+ const invalidChars = /[^0-9\s\-\+\(\)]/;
+ return invalidChars.test(phone);
+};
 export const validateAmount = (amount) => {
  const num = parseFloat(amount);
  return !isNaN(num) && num > 0;
@@ -43,22 +53,31 @@ export const validateForm = (formData, rules) => {
      errors[field] = "Invalid email address";
      return;
    }
-   if (value && rule.phone && !validatePhone(value)) {
-     const digitsOnly = value.replace(/\D/g, "");
-     if (digitsOnly.length === 0) {
-       errors[field] = "Phone number is required";
-     } else if (digitsOnly.length < 10) {
-       errors[
-         field
-       ] = `Phone number must contain exactly 10 digits (currently ${digitsOnly.length})`;
-     } else if (digitsOnly.length > 10) {
-       errors[
-         field
-       ] = `Phone number must contain exactly 10 digits (currently ${digitsOnly.length})`;
-     } else {
-       errors[field] = "Phone number must contain exactly 10 digits";
+   if (value && rule.phone) {
+     // First check for invalid characters
+     if (hasInvalidPhoneCharacters(value)) {
+       errors[field] =
+         "Phone number can only contain numbers and formatting characters (spaces, dashes, parentheses, plus sign)";
+       return;
      }
-     return;
+     // Then check phone format
+     if (!validatePhone(value)) {
+       const digitsOnly = value.replace(/\D/g, "");
+       if (digitsOnly.length === 0) {
+         errors[field] = "Phone number is required";
+       } else if (digitsOnly.length < 10) {
+         errors[
+           field
+         ] = `Phone number must contain exactly 10 digits (currently ${digitsOnly.length})`;
+       } else if (digitsOnly.length > 10) {
+         errors[
+           field
+         ] = `Phone number must contain exactly 10 digits (currently ${digitsOnly.length})`;
+       } else {
+         errors[field] = "Phone number must contain exactly 10 digits";
+       }
+       return;
+     }
    }
    // Also validate phone if it's required but empty
    if (rule.required && rule.phone && !value) {
