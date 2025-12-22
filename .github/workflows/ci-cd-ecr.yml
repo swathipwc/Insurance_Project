@@ -1,0 +1,97 @@
+name: CI-CD to AWS ECR + EC2
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+env:
+  AWS_REGION: us-east-1
+  BACKEND_REPO: insurance-backend
+  FRONTEND_REPO: insurance-frontend
+
+jobs:
+  build-push-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Set image tags
+        run: |
+          echo "ECR_REGISTRY=${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com" >> $GITHUB_ENV
+          echo "IMAGE_TAG=${GITHUB_SHA}" >> $GITHUB_ENV
+
+      # -------- BACKEND BUILD & PUSH --------
+      - name: Build backend image
+        run: |
+          docker build -t $ECR_REGISTRY/$BACKEND_REPO:latest -t $ECR_REGISTRY/$BACKEND_REPO:$IMAGE_TAG ./insurance_backend
+
+      - name: Push backend image
+        run: |
+          docker push $ECR_REGISTRY/$BACKEND_REPO:latest
+          docker push $ECR_REGISTRY/$BACKEND_REPO:$IMAGE_TAG
+
+      # -------- FRONTEND BUILD & PUSH --------
+      - name: Build frontend image
+        run: |
+          docker build -t $ECR_REGISTRY/$FRONTEND_REPO:latest -t $ECR_REGISTRY/$FRONTEND_REPO:$IMAGE_TAG ./insurance_frontend
+
+      - name: Push frontend image
+        run: |
+          docker push $ECR_REGISTRY/$FRONTEND_REPO:latest
+          docker push $ECR_REGISTRY/$FRONTEND_REPO:$IMAGE_TAG
+
+      # -------- DEPLOY TO EC2 via SSH --------
+      - name: Deploy on EC2
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            set -e
+
+            AWS_REGION=${{ secrets.AWS_REGION }}
+            ECR_REGISTRY=${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
+            BACKEND_REPO=insurance-backend
+            FRONTEND_REPO=insurance-frontend
+
+            # Login to ECR on EC2
+            aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $ECR_REGISTRY
+
+            # Create network if missing
+            docker network create insurance-net >/dev/null 2>&1 || true
+
+            # Pull latest images
+            docker pull $ECR_REGISTRY/$BACKEND_REPO:latest
+            docker pull $ECR_REGISTRY/$FRONTEND_REPO:latest
+
+            # Restart backend
+            docker rm -f insurance-backend >/dev/null 2>&1 || true
+            docker run -d --name insurance-backend --network insurance-net \
+              --env-file /home/ec2-user/apps/insurance/.env.backend \
+              -p 8080:8080 \
+              --restart always \
+              $ECR_REGISTRY/$BACKEND_REPO:latest
+
+            # Restart frontend
+            docker rm -f insurance-frontend >/dev/null 2>&1 || true
+            docker run -d --name insurance-frontend --network insurance-net \
+              -p 80:80 \
+              --restart always \
+              $ECR_REGISTRY/$FRONTEND_REPO:latest
+
+            docker ps
