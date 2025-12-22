@@ -93,7 +93,7 @@ const LoginForm = () => {
 
         {/* Title */}
         <h2 className="text-lg font-bold text-center mb-1 text-gray-900">
-          Insurance Management
+          Insurance & Management
         </h2>
         <p className="text-[10px] text-gray-600 text-center mb-4 font-medium">
           Sign in to your account
