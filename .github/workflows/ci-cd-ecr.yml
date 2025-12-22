@@ -72,6 +72,11 @@ jobs:
             # Login to ECR on EC2
             aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $ECR_REGISTRY
 
+            # (NEW) Generate .env.backend from AWS Secrets Manager
+            # Make sure you already created this script on EC2:
+            # /home/ec2-user/Insurance_Project/render-env-backend.sh
+            bash /home/ec2-user/Insurance_Project/render-env-backend.sh
+
             # Create network if missing
             docker network create insurance-net >/dev/null 2>&1 || true
 
@@ -82,7 +87,7 @@ jobs:
             # Restart backend
             docker rm -f insurance-backend >/dev/null 2>&1 || true
             docker run -d --name insurance-backend --network insurance-net \
-              --env-file $HOME/Insurance_Project/.env.backend \
+              --env-file /home/ec2-user/Insurance_Project/.env.backend \
               -p 8080:8080 \
               --restart always \
               $ECR_REGISTRY/$BACKEND_REPO:latest
