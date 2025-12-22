@@ -82,7 +82,7 @@ jobs:
             # Restart backend
             docker rm -f insurance-backend >/dev/null 2>&1 || true
             docker run -d --name insurance-backend --network insurance-net \
-              --env-file /home/ec2-user/apps/insurance/.env.backend \
+              --env-file $HOME/Insurance_Project/.env.backend \
               -p 8080:8080 \
               --restart always \
               $ECR_REGISTRY/$BACKEND_REPO:latest
