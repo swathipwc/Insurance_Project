@@ -2,7 +2,11 @@ import React, { useState, useEffect } from "react";
 import { Loader2 } from "lucide-react";
 import Input from "../common/Input";
 import Button from "../common/Button";
-import { validateForm, validatePhone } from "../../utils/validators";
+import {
+ validateForm,
+ validatePhone,
+ hasInvalidPhoneCharacters,
+} from "../../utils/validators";
 const CustomerForm = ({ customer, onSubmit, onCancel, isLoading = false }) => {
  const [formData, setFormData] = useState({
    name: "",
@@ -23,10 +27,25 @@ const CustomerForm = ({ customer, onSubmit, onCancel, isLoading = false }) => {
  }, [customer]);
  const handleChange = (e) => {
    const { name, value } = e.target;
+   // Update form data first
    setFormData((prev) => ({ ...prev, [name]: value }));
-   // Clear error when user starts typing
-   if (errors[name]) {
-     setErrors((prev) => ({ ...prev, [name]: "" }));
+   // For phone field, check for invalid characters immediately
+   if (name === "phone") {
+     if (value && hasInvalidPhoneCharacters(value)) {
+       setErrors((prev) => ({
+         ...prev,
+         phone:
+           "Phone number can only contain numbers and formatting characters (spaces, dashes, parentheses, plus sign)",
+       }));
+     } else if (errors[name] && value && !hasInvalidPhoneCharacters(value)) {
+       // Clear error if user types valid characters
+       setErrors((prev) => ({ ...prev, [name]: "" }));
+     }
+   } else {
+     // Clear error for other fields when user starts typing
+     if (errors[name]) {
+       setErrors((prev) => ({ ...prev, [name]: "" }));
+     }
    }
  };
  const handleBlur = (e) => {
@@ -35,6 +54,12 @@ const CustomerForm = ({ customer, onSubmit, onCancel, isLoading = false }) => {
    if (name === "phone") {
      if (!value || value.trim() === "") {
        setErrors((prev) => ({ ...prev, phone: "Phone number is required" }));
+     } else if (hasInvalidPhoneCharacters(value)) {
+       setErrors((prev) => ({
+         ...prev,
+         phone:
+           "Phone number can only contain numbers and formatting characters (spaces, dashes, parentheses, plus sign)",
+       }));
      } else if (!validatePhone(value)) {
        const digitsOnly = value.replace(/\D/g, "");
        if (digitsOnly.length === 0) {
